@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 namespace RCompressor
 {
     public static class Compressor
-    {       
+    {
         private static Regex rgxRazorComment = new Regex(@"(?s)@\*.*?\*@", RegexOptions.Compiled);
         private static Regex rgxCSharpMultilineComment = new Regex(@"(?s)\/\*.*?\*\/", RegexOptions.Compiled);
 
@@ -47,7 +47,13 @@ namespace RCompressor
                     return beforeComment;
                 });
 
-                output.AppendLine(trimmedLine);
+                if (line.StartsWith("@model") || line.StartsWith("@using"))
+                    output.AppendLine(trimmedLine);
+                else
+                {
+                    trimmedLine = trimmedLine.TrimEnd(new char[] { ' ', '\r', '\n' });
+                    output.Append(trimmedLine);
+                }
             }
 
             //Removing new lines at the end of the file
@@ -57,4 +63,3 @@ namespace RCompressor
         }
     }
 }
-    
